@@ -325,9 +325,7 @@ body {
   .section { padding: 32px 16px; }
   #side-nav { right: 8px; gap: 6px; }
   .nav-dot { width: 7px; height: 7px; }
-  .nav-arrow { width: 36px; height: 36px; bottom: 16px; }
-  #nav-prev { left: 10px; }
-  #nav-next { right: 10px; }
+  .nav-arrow { display: none !important; }
   #slide-counter { bottom: 16px; left: 50%; transform: translateX(-50%); font-size: 11px; padding: 4px 12px; }
   .section-label { font-size: 11px; letter-spacing: 2px; }
   .section-title { margin-bottom: 12px; }
@@ -2932,23 +2930,21 @@ document.addEventListener('keydown', function(e) {
   }
 });
 
-// Touch swipe navigation for mobile
+// Touch swipe navigation for mobile (vertical: swipe up = next, swipe down = prev)
 (function() {
-  var touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+  var touchStartX = 0, touchStartY = 0;
   var minSwipe = 50;
   document.addEventListener('touchstart', function(e) {
     touchStartX = e.changedTouches[0].screenX;
     touchStartY = e.changedTouches[0].screenY;
   }, { passive: true });
   document.addEventListener('touchend', function(e) {
-    touchEndX = e.changedTouches[0].screenX;
-    touchEndY = e.changedTouches[0].screenY;
-    var dx = touchEndX - touchStartX;
-    var dy = touchEndY - touchStartY;
-    // Only trigger if horizontal swipe > vertical swipe
-    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > minSwipe) {
-      if (dx < 0) goToSlide(currentSlide + 1);  // swipe left = next
-      else goToSlide(currentSlide - 1);           // swipe right = prev
+    var dx = e.changedTouches[0].screenX - touchStartX;
+    var dy = e.changedTouches[0].screenY - touchStartY;
+    // Vertical swipe: up = next slide, down = prev slide
+    if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > minSwipe) {
+      if (dy < 0) goToSlide(currentSlide + 1);  // swipe up = next
+      else goToSlide(currentSlide - 1);           // swipe down = prev
     }
   }, { passive: true });
 })();
