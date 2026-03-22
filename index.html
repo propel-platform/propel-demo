@@ -322,9 +322,40 @@ body {
 
 @media (max-width: 768px) {
   .grid-2, .grid-3, .grid-4, .grid-5 { grid-template-columns: 1fr; }
-  .section { padding: 40px 20px; }
-  #side-nav { right: 12px; gap: 8px; }
-  .nav-dot { width: 8px; height: 8px; }
+  .section { padding: 32px 16px; }
+  #side-nav { right: 8px; gap: 6px; }
+  .nav-dot { width: 7px; height: 7px; }
+  .nav-arrow { width: 36px; height: 36px; bottom: 16px; }
+  #nav-prev { left: 10px; }
+  #nav-next { right: 10px; }
+  #slide-counter { bottom: 16px; left: 50%; transform: translateX(-50%); font-size: 11px; padding: 4px 12px; }
+  .section-label { font-size: 11px; letter-spacing: 2px; }
+  .section-title { margin-bottom: 12px; }
+  .section-subtitle { margin-bottom: 20px; }
+  .glass-card { padding: 16px !important; }
+  .badge { font-size: 11px; padding: 4px 10px; }
+
+  /* Slide-specific mobile overrides */
+  #slide-2 .grid-3 { gap: 12px; }
+  #slide-3 .grid-4 { gap: 12px; }
+  #slide-4 .tree-root { transform: scale(0.85); transform-origin: top center; }
+  #slide-5 .grid-2 { gap: 12px; }
+  #slide-7 .toggle-wrap { flex-wrap: wrap; justify-content: center; }
+  #slide-8 .grid-2 { gap: 12px; }
+  #slide-9 .grid-3 { gap: 12px; }
+  #slide-11 .role-switcher { flex-wrap: wrap; justify-content: center; }
+  #slide-12 .grid-2, #slide-13 .grid-2 { gap: 12px; }
+  #slide-15 .advantage-grid { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 480px) {
+  .section { padding: 24px 12px; }
+  .section-label { font-size: 10px; }
+  .grid-2, .grid-3, .grid-4, .grid-5 { gap: 10px; }
+  .glass-card { padding: 12px !important; border-radius: 12px !important; }
+  #side-nav { display: none; }
+  .nav-arrow { width: 32px; height: 32px; }
+  #slide-15 .advantage-grid { grid-template-columns: 1fr !important; }
 }
 
 /* ══════════════════════════════════════════════════════════════
@@ -2900,6 +2931,27 @@ document.addEventListener('keydown', function(e) {
     goToSlide(currentSlide - 1);
   }
 });
+
+// Touch swipe navigation for mobile
+(function() {
+  var touchStartX = 0, touchStartY = 0, touchEndX = 0, touchEndY = 0;
+  var minSwipe = 50;
+  document.addEventListener('touchstart', function(e) {
+    touchStartX = e.changedTouches[0].screenX;
+    touchStartY = e.changedTouches[0].screenY;
+  }, { passive: true });
+  document.addEventListener('touchend', function(e) {
+    touchEndX = e.changedTouches[0].screenX;
+    touchEndY = e.changedTouches[0].screenY;
+    var dx = touchEndX - touchStartX;
+    var dy = touchEndY - touchStartY;
+    // Only trigger if horizontal swipe > vertical swipe
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > minSwipe) {
+      if (dx < 0) goToSlide(currentSlide + 1);  // swipe left = next
+      else goToSlide(currentSlide - 1);           // swipe right = prev
+    }
+  }, { passive: true });
+})();
 
 // Init on DOM ready
 if (document.readyState === 'loading') {
